@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import Input from './input'
 import Toggle from './toggle'
 
-export default class CompanyNameInput extends React.Component {
+export default class CouponInput extends React.Component {
 	static defaultProps = {
 		toggleText: `Apply a Coupon`,
 		label: `Coupon Code`,
@@ -11,8 +11,12 @@ export default class CompanyNameInput extends React.Component {
 	}
 	constructor(props) {
 		super(props)
-		this.state = { open: false }
+		this.state = { 
+			open: false,
+			isValid: false,
+		}
 		this.open = this.open.bind(this)
+		this.handleChange = this.handleChange.bind(this)
 	}
 	open() {
 		this.setState({ open: true })
@@ -20,8 +24,18 @@ export default class CompanyNameInput extends React.Component {
 			this.input.focus()
 		}, 1)
 	}
+
+	handleChange(e) {
+		console.log(`e.target.value:`, e.target.value)
+		console.log(`this: `, this.props.couponVerify)
+		// TODO handle correctly here
+		if(this.props.couponVerify){
+			this.setState({ isValid: this.props.couponVerify(e.target.value) })
+		}
+	}
+	
 	render() {
-		const { open } = this.state
+		const { open, isValid } = this.state
 		const {
 			toggleText,
 			label,
@@ -48,7 +62,13 @@ export default class CompanyNameInput extends React.Component {
 							name={name}
 							step={step}
 							value={value}
+							onChange={this.handleChange}
 						/>
+						{/* Hide/show if there is 
+							- function for validation
+							- input length
+						*/}
+						<span>Coupon is {isValid ? ``: `in`}valid</span>
 					</div>
 					{apply && (
 						<div role='button' className='zygoteCouponApply'>Apply</div>

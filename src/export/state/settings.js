@@ -17,6 +17,7 @@ const settingsState = new State({
 	onOrderAttempt: noop,
 	onOrder: noop,
 	onError: noop,
+	couponVerify: noop,
 	orderSubmitError: `We're sorry! There was an error with the server. Your order was not placed. Please try again later.`,
 	infoSubmitError: `We're sorry! There was an error with the server. Your information was not placed. Please try again later.`,
 	splitName: false,

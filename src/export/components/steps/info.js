@@ -25,7 +25,7 @@ export default class InfoStep extends React.Component{
 	render() {
 		return (
 			<Subscribe to={[stepState, settingsState]}>
-				{({ step, vals }, { infoHeader, infoFooter, splitName, coupons, testing, plugins }) => (
+				{({ step, vals }, { infoHeader, infoFooter, splitName, coupons, testing, plugins, couponVerify }) => (
 					<Fragment>
 						{(step === `info` || step === `shipping` || step === `payment`) && (
 							<form data-form='info' onSubmit={attemptSubmitInfo}>
@@ -130,7 +130,9 @@ export default class InfoStep extends React.Component{
 									</div>
 								)}
 								{coupons && <div className='zygoteInfoCoupon'>
-									<Coupon />
+									<Coupon 
+										couponVerify={couponVerify}
+									/>
 								</div>}
 								{plugins && plugins.map(({ Info }, key) => {
 									if (typeof Info === `function`) {

@@ -13,9 +13,9 @@ Clone from [Zygote Cart Legacy Version 3.1.0](https://github.com/escaladesports/
 ---
 
 [![Build Status](https://travis-ci.org/escaladesports/zygote-cart.svg?branch=master)](https://travis-ci.org/escaladesports/zygote-cart)
-[![npm](https://img.shields.io/npm/v/@escaladesports/zygote-cart.svg)](https://www.npmjs.com/package/@escaladesports/zygote-cart)
+[![npm](https://img.shields.io/npm/v/@escaladesports/vt-zygote-cart.svg)](https://www.npmjs.com/package/@escaladesports/zygote-cart)
 
-[Documentation](https://escaladesports.github.io/zygote-cart/index.html)
+[Documentation](https://escaladesports.github.io/vt-zygote-cart/index.html)
 
 Zygote is a drop-in e-commerce front end built in React. It takes a "bring your own backend" approach so it can work with any payment processor or order fulfillment system. Out of the box it works very well with Stripe.
 
@@ -26,19 +26,19 @@ Zygote is a drop-in e-commerce front end built in React. It takes a "bring your 
 With npm:
 
 ```bash
-npm install --save @escaladesports/zygote-cart
+npm install --save @escaladesports/vt-zygote-cart
 ```
 
 Or with Yarn:
 
 ```bash
-yarn add @escaladesports/zygote-cart
+yarn add @escaladesports/vt-zygote-cart
 ```
 
 ## Usage
 
 ```jsx
-import { Cart, addToCart } from '@escaladesports/zygote-cart'
+import { Cart, addToCart } from '@escaladesports/vt-zygote-cart'
 
 <button onClick={() => addToCart({
   id: `TESTID`,
@@ -244,7 +244,7 @@ For items like digital goods or services that don't require shipping, you can pa
 Example:
 
 ```jsx
-import { addToCart } from '@escaladesports/zygote-cart'
+import { addToCart } from '@escaladesports/vt-zygote-cart'
 
 <button onClick={addToCart({
   id: `DIS82`,

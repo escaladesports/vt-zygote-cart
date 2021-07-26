@@ -39,7 +39,7 @@
     "serve": "gatsby serve --open",
     "test": "npm run test:module",
     "test:module": "npm run build:module && jest",
-    "travis": "opn https://travis-ci.org/escaladesports/zygote-cart/branches",
+    "travis": "opn https://travis-ci.org/escaladesports/vt-zygote-cart/branches",
     "docs": "slate-cli build",
     "docs:serve": "slate-cli serve"
   },
