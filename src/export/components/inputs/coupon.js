@@ -9,15 +9,36 @@ export default class CouponInput extends React.Component {
 		apply: false,
 		name: `coupon`,
 	}
+
 	constructor(props) {
 		super(props)
-		this.state = { 
+		this.timeOut = null
+
+		this.state = {
 			open: false,
 			isValid: false,
 		}
+
 		this.open = this.open.bind(this)
 		this.handleChange = this.handleChange.bind(this)
 	}
+
+	async isCouponValid(){
+		const data = {coupon: this.state.coupon}
+
+		const response = await window.fetch(this.props.api, {
+			method: `POST`, // *GET, POST, PUT, DELETE, etc.
+			cache: `no-cache`, // *default, no-cache, reload, force-cache, only-if-cached
+			headers: {
+				'Content-Type': `application/json`,
+			},
+			body: JSON.stringify(data), // body data type must match "Content-Type" header
+		})
+
+		return response.json() // parses JSON response into native JavaScript objects
+
+	}
+
 	open() {
 		this.setState({ open: true })
 		setTimeout(() => {
@@ -26,14 +47,30 @@ export default class CouponInput extends React.Component {
 	}
 
 	handleChange(e) {
-		console.log(`e.target.value:`, e.target.value)
-		console.log(`this: `, this.props.couponVerify)
-		// TODO handle correctly here
-		if(this.props.couponVerify){
-			this.setState({ isValid: this.props.couponVerify(e.target.value) })
-		}
+		//automatically checks for coupon validity.
+		//waits for user input to end then calls API
+		this.setState({
+			coupon: e.target.value,
+		}, ()=>{
+			if(this.timeOut){
+				window.clearTimeout(this.timeOut)
+				this.timeOut = this.setNewTimeOut()
+			}else{
+				this.timeOut = this.setNewTimeOut()
+			}
+		})
 	}
-	
+
+	setNewTimeOut(){
+		return setTimeout(()=>{
+			this.isCouponValid().then((data)=>{
+				this.setState({isValid: data.isValid},()=>{
+					this.props.validCheck()
+				})
+			})
+		}, 600)
+	}
+
 	render() {
 		const { open, isValid } = this.state
 		const {
@@ -64,11 +101,11 @@ export default class CouponInput extends React.Component {
 							value={value}
 							onChange={this.handleChange}
 						/>
-						{/* Hide/show if there is 
+						{/* Hide/show if there is
 							- function for validation
 							- input length
 						*/}
-						<span>Coupon is {isValid ? ``: `in`}valid</span>
+						<span>Coupon is {isValid ? ``: `not `}valid</span>
 					</div>
 					{apply && (
 						<div role='button' className='zygoteCouponApply'>Apply</div>

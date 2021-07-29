@@ -22,11 +22,43 @@ import SimpleSummary from '../simple-summary'
 import Coupon from '../inputs/coupon'
 
 export default class InfoStep extends React.Component{
+
+	constructor() {
+		super()
+
+		this.state = {
+			isCouponValid: false,
+			isAddressValid: false,
+		}
+	}
+
+	couponIsInvalid(){
+
+	}
+
+	submitForm (){
+
+	}
+
+	validateAddress (){
+
+	}
+
+	couponValidation (bool){
+		this.setState({isCouponValid: bool})
+	}
+
+	enableSubmitButton(){
+		return !(this.state.isAddressValid && this.state.isCouponValid)
+	}
+
 	render() {
 		return (
 			<Subscribe to={[stepState, settingsState]}>
-				{({ step, vals }, { infoHeader, infoFooter, splitName, coupons, testing, plugins, couponVerify }) => (
+				{({ step, vals }, { infoHeader, infoFooter, splitName, coupons, testing, plugins, couponVerify, addressAPI, couponAPI }) => (
 					<Fragment>
+						{ console.log(`Address VERIFY >>>>>>>`, addressAPI) }
+						{ console.log(`Coupon VERIFY >>>>>>>`, couponAPI) }
 						{(step === `info` || step === `shipping` || step === `payment`) && (
 							<form data-form='info' onSubmit={attemptSubmitInfo}>
 								{!!infoHeader && (
@@ -130,7 +162,9 @@ export default class InfoStep extends React.Component{
 									</div>
 								)}
 								{coupons && <div className='zygoteInfoCoupon'>
-									<Coupon 
+									<Coupon
+										validCheck={(data)=>{this.couponValidation(data)}}
+										api={couponAPI}
 										couponVerify={couponVerify}
 									/>
 								</div>}
@@ -140,7 +174,7 @@ export default class InfoStep extends React.Component{
 									}
 								})}
 								<div className='zygoteInfoBtn'>
-									<Button type='submit' /*onClick={}*/ dataTestid="info-next-step">
+									<Button disabled={this.enableSubmitButton()} type='submit' /*onClick={}*/ dataTestid="info-next-step">
 										Next Step
 									</Button>
 								</div>
@@ -159,6 +193,7 @@ export default class InfoStep extends React.Component{
 			</Subscribe>
 		)
 	}
+
 	static styles = () => ({
 		'.zygoteInfoSection': {
 			marginTop: 40,
