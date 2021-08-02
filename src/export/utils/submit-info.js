@@ -26,6 +26,7 @@ export default async function submitInfo() {
 
 		let data
 		try {
+			//This is just extra information being passed onto a custom function called fetch.... 🤮
 			data = await fetch(infoWebhook, vals)
 		}
 		catch (err) {

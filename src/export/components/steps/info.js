@@ -15,6 +15,8 @@ import StepsHeader from '../steps-header'
 import Header from '../header'
 import Button from '../button'
 import attemptSubmitInfo from '../../utils/attempt-submit-info'
+import displayError from "../../utils/display-error"
+import getFormValues from '../../utils/get-form-values'
 import previousStep from '../../utils/previous-step'
 import productsState from '../../state/products'
 import settingsState from '../../state/settings'
@@ -32,16 +34,50 @@ export default class InfoStep extends React.Component{
 		}
 	}
 
-	couponIsInvalid(){
+	async checkAddress(url, data){
+		const response = await window.fetch(url, {
+			method: `POST`, // *GET, POST, PUT, DELETE, etc.
+			cache: `no-cache`, // *default, no-cache, reload, force-cache, only-if-cached
+			headers: {
+				'Content-Type': `application/json`,
+			},
+			body: JSON.stringify(data), // body data type must match "Content-Type" header
+		})
 
+		return response.json() // parses JSON response into native JavaScript objects
 	}
 
 	submitForm (){
 
 	}
 
-	validateAddress (){
+	validateAddress (e, api){
+		// attemptSubmitInfo
+		e.preventDefault()
+		let vals = getFormValues()
+		let shippingAddy = {
+			"street1": vals.shippingAddress1,
+			"street2": vals.shippingAddress2,
+			"city": vals.shippingCity,
+			"company": vals.shippingCompany,
+			"state": vals.shippingState,
+			"zip": vals.shippingZip,
+		}
 
+		this.checkAddress(api, shippingAddy).then((data)=>{
+			if(data.isValid){
+				//Progress to next step
+				attemptSubmitInfo()
+			}else{
+				displayError(`Review Shipping Address; Address Not Found`)
+				const cartEl = document.querySelector(`.zygoteCart`)
+				if (cartEl){
+					cartEl.scrollTop = 0
+				}
+			}
+		}).catch((e)=>{
+			console.log(e)
+		})
 	}
 
 	couponValidation (bool){
@@ -49,7 +85,7 @@ export default class InfoStep extends React.Component{
 	}
 
 	enableSubmitButton(){
-		return !(this.state.isAddressValid && this.state.isCouponValid)
+		return !(this.state.isAddressValid)
 	}
 
 	render() {
@@ -57,10 +93,8 @@ export default class InfoStep extends React.Component{
 			<Subscribe to={[stepState, settingsState]}>
 				{({ step, vals }, { infoHeader, infoFooter, splitName, coupons, testing, plugins, couponVerify, addressAPI, couponAPI }) => (
 					<Fragment>
-						{ console.log(`Address VERIFY >>>>>>>`, addressAPI) }
-						{ console.log(`Coupon VERIFY >>>>>>>`, couponAPI) }
 						{(step === `info` || step === `shipping` || step === `payment`) && (
-							<form data-form='info' onSubmit={attemptSubmitInfo}>
+							<form data-form='info' onSubmit={(e)=>{this.validateAddress(e, addressAPI)}}>
 								{!!infoHeader && (
 									<div>{infoHeader}</div>
 								)}
@@ -174,7 +208,7 @@ export default class InfoStep extends React.Component{
 									}
 								})}
 								<div className='zygoteInfoBtn'>
-									<Button disabled={this.enableSubmitButton()} type='submit' /*onClick={}*/ dataTestid="info-next-step">
+									<Button type='submit' /*onClick={}*/ dataTestid="info-next-step">
 										Next Step
 									</Button>
 								</div>
